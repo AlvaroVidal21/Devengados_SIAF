@@ -8,3 +8,16 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Playwright credentials and sessions
+estado_siaf.json
+
+# Local environment variables
+.env
+
+# Excel spreadsheets (contains sensitive data)
+*.xlsx
+!input_siaf_template.xlsx
+
+# Archive and analysis folders with data
+ANALISIS01/
