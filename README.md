@@ -97,6 +97,19 @@ graph TD
 * **Condición**: El expediente cuenta con saldo financiero a favor y la estimación del periodo contractual indica que el servicio aún se encuentra en plazo de ejecución.
 * **Acción sugerida**: Monitorear entregables de los siguientes meses.
 
+## Stack Tecnológico y Justificación Técnica
+
+Este proyecto combina herramientas robustas que resuelven tanto la extracción en entornos protegidos como el análisis posterior de datos complejos:
+
+| Tecnología | Rol en el Proyecto | Justificación Técnica (El porqué) |
+| :--- | :--- | :--- |
+| **Python (>=3.12)** | Core del Sistema | Ofrece un entorno maduro, legible y optimizado para la automatización y la estructuración de flujos lógicos de análisis. |
+| **Playwright (Python)** | Motor de Extracción | Supera los límites de las peticiones HTTP tradicionales (como `requests`) al controlar una instancia real de Chromium. Esto permite saltar la fricción de autenticaciones complejas (Single Sign-On), evitar bloqueos CORS o cortafuegos (WAF) y extraer el token JWT (`mefAuthToken`) desde el `localStorage` del cliente para inyectar llamadas autenticadas de forma segura. |
+| **Pandas** | Procesamiento de Datos | Proporciona la estructura (DataFrames) y el rendimiento para la limpieza de datos, ordenación de hitos financieros y la ejecución matemática del motor de puntuación (scoring) sobre miles de filas. |
+| **OpenPyXL** | Persistencia de Reportes | Permite leer plantillas de entrada y escribir los reportes consolidados en hojas de cálculo multi-pestaña de forma estructurada. |
+| **UV (Rust)** | Gestión de Entorno | Asegura un entorno virtual reproducible, rápido y consistente a través de dependencias estrictamente controladas mediante archivos de bloqueo deterministas (`uv.lock`). |
+| **python-dotenv** | Seguridad de Desarrollo | Permite cargar configuraciones y credenciales locales seguras sin riesgo de exponer información confidencial en el repositorio. |
+
 ---
 
 ## Estructura del Reporte de Salida
@@ -113,3 +126,14 @@ Consolida métricas agregadas por expediente:
 
 ### Hoja 2: Grupos de Devengado
 Detalla la traza de auditoría de los devengados agrupados por el algoritmo de conciliación de retenciones. Permite verificar de forma transparente qué recibos por honorarios fueron emparejados con qué impuestos retenidos para consolidar el monto bruto mensual.
+
+---
+
+## Conclusiones y Valor de Negocio
+
+El desarrollo de este sistema demuestra cómo la ingeniería y el análisis de datos pueden optimizar la gestión financiera pública al transformar registros lineales fragmentados en información accionable:
+
+* **Optimización de Recursos Presupuestales**: Al detectar automáticamente los expedientes en estado **Por Rebajar**, el sistema identifica saldos de dinero que ya no serán ejecutados pero siguen comprometidos. Esto permite a la entidad pública liberar y reasignar dicho presupuesto de manera ágil a otras partidas presupuestarias necesitadas de liquidez.
+* **Eficiencia Operativa**: Automatizar la extracción mediante Playwright con retención de sesión (`estado_siaf.json`) reduce drásticamente el costo de horas hombre necesarias para consultar manualmente cada orden de servicio, permitiendo auditar cientos de expedientes en pocos minutos.
+* **Trazabilidad y Auditoría Financiera**: La hoja de devengados agrupados actúa como un registro de conciliación transparente que justifica cómo se reconstruyó el monto bruto de cada mensualidad. Esto disminuye la probabilidad de error humano y facilita la presentación de informes limpios para auditorías internas o de la Contraloría General de la República.
+* **Flexibilidad e Inteligencia**: La separación del flujo en un módulo extractor (`extractor.py`) y un módulo analítico (`analizador.py`) asegura la escalabilidad del sistema. Las heurísticas de scoring de mensualidades y lógica temporal pueden refinarse o adaptarse a nuevos tipos de contratos gubernamentales (como adquisiciones de bienes o convenios) sin necesidad de modificar el extractor principal.
